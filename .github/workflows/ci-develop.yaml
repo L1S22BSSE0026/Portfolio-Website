@@ -25,18 +25,20 @@ jobs:
 
     - name: Lint HTML files with HTMLHint
       run: |
-        FILES=$(find src -name "*.html")
-        if [ -z "$FILES" ]; then
-          echo "No HTML files found. Skipping htmlhint."
+        if [ ! -d "src" ]; then
+          echo "✅ 'src' folder not found. Skipping HTMLHint."
+        elif [ -z "$(find src -name '*.html')" ]; then
+          echo "✅ No HTML files found in 'src'. Skipping HTMLHint."
         else
           npx htmlhint "src/**/*.html" --config .htmlhintrc.json
         fi
 
     - name: Lint CSS files with Stylelint
       run: |
-        FILES=$(find styles -name "*.css")
-        if [ -z "$FILES" ]; then
-          echo " No CSS files found. Skipping stylelint."
+        if [ ! -d "styles" ]; then
+          echo "✅ 'styles' folder not found. Skipping Stylelint."
+        elif [ -z "$(find styles -name '*.css')" ]; then
+          echo "✅ No CSS files found in 'styles'. Skipping Stylelint."
         else
           npx stylelint "styles/**/*.css" --config .stylelintrc.json
         fi
