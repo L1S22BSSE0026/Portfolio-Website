@@ -1,0 +1,44 @@
+name: CI - Lint HTML & CSS
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  lint:
+    name: Run HTMLHint and Stylelint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: |
+        npm init -y
+        npm install --save-dev htmlhint stylelint stylelint-config-standard
+
+    - name: Lint HTML files with HTMLHint
+      run: |
+        if [ ! -d "src" ]; then
+          echo "✅ 'src' folder not found. Skipping HTMLHint."
+        elif [ -z "$(find src -name '*.html')" ]; then
+          echo "✅ No HTML files found in 'src'. Skipping HTMLHint."
+        else
+          npx htmlhint "src/**/*.html" --config .htmlhintrc.json
+        fi
+
+    - name: Lint CSS files with Stylelint
+      run: |
+        if [ ! -d "styles" ]; then
+          echo "✅ 'styles' folder not found. Skipping Stylelint."
+        elif [ -z "$(find styles -name '*.css')" ]; then
+          echo "✅ No CSS files found in 'styles'. Skipping Stylelint."
+        else
+          npx stylelint "styles/**/*.css" --config .stylelintrc.json
+        fi
